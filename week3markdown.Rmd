@@ -1,30 +1,78 @@
 ---
-title: "Week3"
-author: "FG"
+title: "Demo R Markdown for CS Class"
+author: "Christopher Barrie"
 date: "2022-10-04"
-output: html_document
+output:
+  html_document: default
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 ## R Markdown
+
+### R Markdown subhead
+
+This is *some italics*
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
+And this is a demo document 
+
+```{r}
 summary(cars)
 ```
 
 ## Including Plots
 
 You can also embed plots, for example:
- `eval=T` runs code.
- echo=FALSE doesnt show code
-```{r pressure, echo=T}
+
+```{r, echo=FALSE}
 plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+Now I'm going to introduce some of my own data.
+
+I'll first load the packages:
+
+```{r, echo = F}
+library(jsonlite)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r, echo = TRUE}
+wbdata <- jsonlite::fromJSON(gzcon(url("https://github.com/cjbarrie/CS-ED/blob/main/data/web_historian_data.json?raw=true")))
+```
+
+And now I'm going to count some of its properties:
+
+```{r}
+wbdata_mp <- wbdata %>% 
+  group_by(domain) %>%
+  count() %>%
+  filter(n >5)
+```
+
+And now I'm going to plot it
+
+```{r}
+  wbdata_mp %>%
+  ggplot() +
+  geom_bar(aes(domain, n), stat = "identity") +
+  coord_flip()
+```
+
+```{r}
+summary(wbdata)
+head(wbdata_mp)
+summary(wbdata_mp)
+```
+
+```{r}
+bydate<-wbdata %>% 
+  group_by(date) %>%
+  count() 
 ```
 
