@@ -1,0 +1,57 @@
+---
+title: "Week 4 Assignment"
+author: "Fernan Gaillardou"
+date: "2022-10-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### Questions
+
+1.  Count the types of things I'm doing online (column "transType" in the `wbdata`). What is my most frequent type of interaction with the web?
+```{r}
+wbdata %>%
+  group_by(transType) %>% 
+  count() %>% 
+  ggplot() +
+  geom_bar(aes(transType, n), stat = "identity") +
+  coord_flip()
+```
+2.  Change the colour of the bars in the bar graph.
+```{r}
+wbdata %>%
+  group_by(transType) %>% 
+  count() %>% 
+  ggplot() +
+  geom_bar(aes(transType, n, fill=transType), stat = "identity") +
+  coord_flip()
+```
+Order bars (still working on it)
+```{r}
+wbdata %>%
+  group_by(transType) %>% 
+  count() %>% 
+  arrange(desc(n)) %>% 
+  ggplot() +
+  geom_bar(aes(transType, n, fill=transType), stat = "identity")
+```
+### Questions
+
+1.  Count how many "left" nodes there are and how many "right" nodes there are.
+
+```{r}
+question1 <- samp_attr_lr %>%
+  group_by(lr) %>% 
+  count() 
+```
+2.  Add arrows to the network plot and increase their width (hint: see [here](https://r-graph-gallery.com/248-igraph-plotting-parameters.html))
+```{r}
+plot(simplify(igraph_rt_samp), 
+     vertex.label = NA, 
+     vertex.size = 4,
+     vertex.color = samp_attr_lr$lrcolor,
+     edge.arrow.size = 0.1,
+     edge.arrow.width=0.1)
+```
