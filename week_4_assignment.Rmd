@@ -4,6 +4,9 @@ author: "Fernan Gaillardou"
 date: "2022-10-07"
 output: html_document
 ---
+```{r, setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "C:/Users/ferna/Google Drive/No compartidos/PhD Edinburgh/Courses/Computational Sociology")
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -30,12 +33,11 @@ wbdata %>%
 ```
 Order bars (still working on it)
 ```{r}
-wbdata %>%
-  group_by(transType) %>% 
-  count() %>% 
-  arrange(desc(n)) %>% 
-  ggplot() +
-  geom_bar(aes(transType, n, fill=transType), stat = "identity")
+order_bars <- plyr::count(wbdata$transType)
+wbdata$transType <- factor(wbdata$transType, 
+  levels = order_bars$x[order(order_bars$freq, decreasing = TRUE)])
+
+ggplot(wbdata, aes( x = transType) ) + geom_bar()
 ```
 ### Questions
 
