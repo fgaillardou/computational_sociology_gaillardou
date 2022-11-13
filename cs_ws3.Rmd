@@ -1,0 +1,64 @@
+---
+title: "Untitled"
+author: "Fernan Gaillardou"
+date: "2022-11-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Packages
+```{r}
+library(tidyverse)
+library(readxl)
+library(tuber)
+library(purrr)
+```
+1) Make your own request to the YouTube API for a different seed video.
+```{r}
+yt_oauth("791684141006-35su4lb2stjkhjbkp40lqugp6fd6ud2i.apps.googleusercontent.com","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")
+startvid <- "LQtp1USYjcA"
+rel_vids <- get_related_videos(startvid, max_results = 50, safe_search = "none")
+```
+2) Collect one video ID for each of the channels included in the resulting data
+```{r}
+q2 <- rel_vids %>% 
+  group_by(channelId) %>% sample_n(1)
+```
+3) Write a for loop to collect recommended videos for each of these video IDs
+3.a. Video IDs as vector
+```{r}
+rel_video_ids <- base::as.vector(q2$rel_video_id)
+```
+3.b. Get related videos function
+```{r}
+ get_all_rel_vids <- function(id) {
+  tuber::get_related_videos(id, max_results = 50, safe_search = "none")
+} 
+```
+3.c. Iterations (get 50 related videos for each video)
+```{r}
+q3 <- purrr::map_df(.x = rel_video_ids, 
+                    .f = get_all_rel_vids)
+```
+Check there are 50 related for each video
+```{r}
+q3 %>% count(video_id)
+```
+Unique channels
+```{r}
+q3_channels <- q3 %>% 
+  group_by(channelId) %>% sample_n(1)
+```
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+
+

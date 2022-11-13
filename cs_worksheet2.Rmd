@@ -1,0 +1,78 @@
+---
+title: "cs_worksheet 2"
+author: "Fernan Gaillardou"
+date: "2022-10-30"
+output: html_document
+---
+```{r, setup, include=F}
+knitr::opts_knit$set(root.dir = "C:/Users/ferna/Google Drive/No compartidos/PhD Edinburgh/Courses/Computational Sociology")
+```
+
+```{r}
+library(tidyverse) 
+library(rtweet) 
+library(academictwitteR)
+library(dplyr)
+library(devtools)
+library(ggplot2)
+library(tweetscores)
+library(vtable)
+```
+
+```{r}
+api_key <-"WpSxWuFTq0Vc8orJCVOm7dlT5"
+api_key_secret <- "DQWlOlEXGGvv2FERYmWpEYNeS0byZZasNWvbr1MHEwT619pYuM"
+access_token <- "AAAAAAAAAAAAAAAAAAAAAGAqjAEAAAAAb9vLxtqY%2Fk%2FZoGWNrs%2BGYKUOlqg%3DBkbnZb7PEfvZ0lDADgz9xmW11UjznKff9njOoO4KpHGic0RSi4"
+access_token_secret <- "WEozH5MJMxgVaneZLs5jQcsG5Zuc0o71iT0tfnxn1FKKD"
+
+```
+```{r}
+auth_setup_default()
+```
+```{r}
+user <- "@CFKArgentina"
+CFKtweets <- get_timeline(user, n = 500)
+```
+
+```{r}
+tweet_IDs <- readRDS(CFKtweets)
+```
+
+```{r}
+
+#throws an error still for some IDs (looking into this)
+hydrated_tweets <- hydrate_tweets(tweet_IDs, errors = T,
+                                  data_path = "/hydrated_tweets/")
+
+```
+Get user ID
+```{r}
+get_user_id("CFKArgentina")
+cjb_ID <- "95226101"
+```
+Who is following. Metrics. Plot.
+```{r}
+userfwing <- get_user_following(cjb_ID)
+ids <- userfwing$id
+userfwing_metrics <- userfwing$public_metrics
+userfwing_metrics %>%
+  ggplot() +
+  geom_histogram(aes(log(followers_count)),
+                 binwidth = .5)
+```
+Table with these data (package "vtable")
+```{r}
+sumtable(userfwing_metrics)
+```
+Ideological position of user
+```{r}
+results <- estimateIdeology("CFKArgentina", ids)
+
+plot(results)
+```
+```{r}
+
+```
+```{r}
+
+```
